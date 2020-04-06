@@ -57,7 +57,7 @@ namespace TMediator {
 			var callback = self.getSubscriber (id);
 
 			if (callback.value != null) {
-				self.callbacks.RemoveAt (callback.index);
+				self.callbacks.Remove (callback);
 				self.callbacks.Insert (priority, callback.value);
 			}
 		}
@@ -96,7 +96,8 @@ namespace TMediator {
 				}
 
 				var ret = self.callbacks[callback.index];
-				self.callbacks.RemoveAt (callback.index);
+				// self.callbacks.RemoveAt (callback.index);
+				self.callbacks.Remove(ret);
 				return ret;
 			}
 			return null;
@@ -104,8 +105,9 @@ namespace TMediator {
 
 		public List<object> publish (List<object> result, ArgList arglist) {
 			var self = this;
-			for (var i = 0; i < self.callbacks.Count; i++) {
-				var callback = self.callbacks[i];
+            var callbacksCopy = self.callbacks.ToArray();
+			for (var i = 0; i < callbacksCopy.Length; i++) {
+				var callback = callbacksCopy[i];
 
 				if (callback.options.predicate == null || callback.options.predicate (arglist)) {
 					var ret = callback.fn (arglist);
